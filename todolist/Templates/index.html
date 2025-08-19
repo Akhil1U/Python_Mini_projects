@@ -18,16 +18,110 @@
         body {
             background-color: #b5bcc2;
         }
+
+        /* center div */
         .container-main {
             margin: 0 auto;
             width: 900px;
         }
+
         .container {
             margin-left: 15%;
             width: 700px;
         }
+
+        /* on hover title shows description */
+        .task_list {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .task_list:hover {
+            background-color: rgb(209, 205, 199);
+        }
+
+        .hidden-content {
+            opacity: 0;
+            /* Initially hidden */
+            visibility: hidden;
+            /* Also hidden from screen readers and layout */
+            transition: opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
+            /* Fade and delay visibility */
+            background-color: rgb(192, 192, 192);
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        .task_list:hover+.hidden-content {
+            opacity: 1;
+            /* Fade in */
+            visibility: visible;
+            /* Becomes visible */
+            transition-delay: 0s;
+            /* No delay when showing */
+
+        }
+
+        /* ------------pop up form ----------- style */
+
+        .popup-form {
+            display: none;
+            margin-right: 18%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+        }
+
+        /* When the div is targeted via #id in URL, show it */
+        .popup-form:target {
+            display: block;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 20px;
+            margin: 12% auto;
+            align-items: center;
+            width:  500px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .close-btn {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: red;
+        }
+
+        /* pop up internal style */
+
+        .popup-content input[type="text"] {
+            width: 95%;
+            padding: 8px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            position: relative;
+        }
+
+        .popup-content input[type="textarea"] {
+            padding: 8px;
+            height: 150px;
+            margin-right: 5%;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            position: relative;
+        }
     </style>
 </head>
+
 <body>
     <div class="container-main">
         <div class="container">
@@ -35,7 +129,7 @@
             <div class="header">
                 <h2>TO DO LIST</h2>
             </div>
-            <h3>Add Tasks</h3>
+            <h3>Add Today's Tasks</h3>
 
             <form method="post" action="" style="max-width: 500px;">
                 {% csrf_token %}
@@ -46,8 +140,8 @@
                 </div>
 
                 <div style="margin-bottom: 15px;">
-                    <textarea name="task_description" placeholder="Enter task description (optional)"
-                        style="width: 100%; padding: 8px; box-sizing: border-box; resize: vertical;"></textarea>
+                    <textarea name="task_description" placeholder="Enter task description (optional) "
+                        style="width: 100%;height:150px; padding: 8px; box-sizing: border-box; resize: vertical;"></textarea>
                 </div>
 
                 <button type="submit"
@@ -55,8 +149,9 @@
                     Add Task
                 </button>
             </form>
-
+            <br></br>
             {% for task in tasks %}
+            <!-- if task completed -->
             {% if task.completed %} <span>✔️ Completed</span> {% endif %}
             <form style="display: inline;" method="post" action="{% url 'complete_task' task.id %}">
                 {% csrf_token %}
@@ -66,10 +161,32 @@
             </form>
             <form style="display: inline;" method="post" action="{% url 'delete_task' task.id %}">
                 {% csrf_token %}
-                <button type="submit" style="color:red;">🗑️</button>
+                <button type="submit">🗑️</button>
             </form>
-            
-            {{ task.title }} - {{task.description}} - {{task.created_at}}<br>
+            <!-- else it will shows as to do -->
+            <!-- this will shows title and time  -->
+            <span class="task_list">{{ task.title }} - {{task.created_at}}
+            </span>
+
+            <!-- Edit Button for update task -->
+            <a href="#edit-{{ task.id }}">✏️ Edit</a>
+
+            <!-- Hidden popup form -->
+            <div class="popup-form" id="edit-{{ task.id }}">
+                <div class="popup-content">
+                    <h3>Edit Task</h3>
+                    <form method="post" action="{% url 'edit_task' task.id %}">
+                        {% csrf_token %}
+                        <input  type="text" name="title" value="{{ task.title }}"><br><br>
+                        <textarea style="width: 100%; height: 100px;" name="description">{{ task.description }}</textarea><br><br>
+                        <button type="submit">Save</button>
+                        <a href="#" class="close-btn">Cancel</a>
+                    </form>
+                </div>
+            </div>
+            <!-- this will show description of task on hover title -->
+            <div class="hidden-content">{{task.description}}</div>
+
             {% empty %}
             <p>No tasks yet.</p>
             {% endfor %}

@@ -29,6 +29,22 @@ def delete_task(request,task_id):
             tasks.delete()
         return redirect('index')
 
+# def update_task(request, task_id):
+#     tasks = get_object_or_404(Task, id = task_id)
+#     if request.method == "PATCH":
+#         tasks.update()
+#     return redirect('index')
+
+def edit_task(request, task_id):
+    tasks = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        tasks.title = request.POST.get('title')
+        tasks.description = request.POST.get('description')
+        tasks.save()
+        return redirect('index')
+    return redirect('index')
+     
+
 
 
 
