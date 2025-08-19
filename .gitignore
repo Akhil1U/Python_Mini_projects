@@ -1,0 +1,9 @@
+
+# Ignore Python cache files and folders
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Recursively ignore __pycache__ directories in all subfolders
+**/__pycache__/

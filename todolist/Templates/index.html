@@ -1,0 +1,81 @@
+{% load static %}
+
+{{ STATIC_URL }}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+
+    <!-- {% load static %} -->
+    <!-- <link rel="stylesheet" href="{% static 'todo/index.css' %}"> -->
+    <!-- <link href="todolist\static\todo\index.css"> -->
+    <style>
+        body {
+            background-color: #b5bcc2;
+        }
+        .container-main {
+            margin: 0 auto;
+            width: 900px;
+        }
+        .container {
+            margin-left: 15%;
+            width: 700px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-main">
+        <div class="container">
+            <p> Hello. Welcome to the to do list..! </p>
+            <div class="header">
+                <h2>TO DO LIST</h2>
+            </div>
+            <h3>Add Tasks</h3>
+
+            <form method="post" action="" style="max-width: 500px;">
+                {% csrf_token %}
+
+                <div style="margin-bottom: 15px;">
+                    <input type="text" name="task_title" placeholder="Enter task title" required
+                        style="width: 100%; position: relative;padding: 8px; box-sizing: border-box;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <textarea name="task_description" placeholder="Enter task description (optional)"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; resize: vertical;"></textarea>
+                </div>
+
+                <button type="submit"
+                    style="padding: 10px 20px; background-color: green; color: white; border: none; cursor: pointer;">
+                    Add Task
+                </button>
+            </form>
+
+            {% for task in tasks %}
+            {% if task.completed %} <span>✔️ Completed</span> {% endif %}
+            <form style="display: inline;" method="post" action="{% url 'complete_task' task.id %}">
+                {% csrf_token %}
+                <input type="checkbox" name="complete_task" onchange="this.form.submit()" {% if task.completed %}
+                    checked {% endif %} class="todo-checkbox"
+                    title="{% if not task.completed %}Mark as done{% else %}Mark as undone{% endif %}">
+            </form>
+            <form style="display: inline;" method="post" action="{% url 'delete_task' task.id %}">
+                {% csrf_token %}
+                <button type="submit" style="color:red;">🗑️</button>
+            </form>
+            
+            {{ task.title }} - {{task.description}} - {{task.created_at}}<br>
+            {% empty %}
+            <p>No tasks yet.</p>
+            {% endfor %}
+
+        </div>
+    </div>
+</body>
+
+</html>
