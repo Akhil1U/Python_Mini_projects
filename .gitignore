@@ -7,3 +7,5 @@ __pycache__/
 
 # Recursively ignore __pycache__ directories in all subfolders
 **/__pycache__/
+
+# jdghd
