@@ -1,0 +1,10 @@
+@import url(//fonts.googleapis.com/css?family=muli);
+
+/* Basic css */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, sans-serif;
+}
+

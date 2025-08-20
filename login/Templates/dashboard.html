@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title%} dashboard {% endblock%}
+{% block content %}
+    <h1> dashboard</h1>
+    Hello, {{request.user.username}}
+    <p>welcome to your page</p>
+    <p>change password <a href="{% url 'password_change' %}">here</a></p>
+    
+  
+     <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+    </form>
+
+{% endblock %}
